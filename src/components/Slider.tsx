@@ -1,14 +1,12 @@
 import * as SliderRadix from '@radix-ui/react-slider'
 import classNames from 'classnames'
-import { useState } from 'react'
 
-interface Props {
+interface Props extends SliderRadix.SliderProps {
   label: string
+  valueSlider: number
 }
 
-export function Slider({ label }: Props) {
-  const [value, setValue] = useState(0)
-
+export function Slider({ label, valueSlider, ...rest }: Props) {
   return (
     <div className="flex flex-col gap-3">
       <label className="text-white font-medium">{label}</label>
@@ -19,14 +17,14 @@ export function Slider({ label }: Props) {
             min={0}
             max={10}
             step={1}
-            onValueChange={(valueSlider) => setValue(valueSlider[0])}
+            {...rest}
           >
             <SliderRadix.Track className="bg-zinc-700 relative rounded-full h-[3px] w-full">
               <SliderRadix.Range
                 className={classNames('absolute  rounded-full h-full', {
-                  'bg-red-500': value >= 0 && value <= 3,
-                  'bg-yellow-500': value >= 4 && value <= 6,
-                  'bg-green-500': value >= 7 && value <= 10,
+                  'bg-red-500': valueSlider >= 0 && valueSlider <= 3,
+                  'bg-yellow-500': valueSlider >= 4 && valueSlider <= 6,
+                  'bg-green-500': valueSlider >= 7 && valueSlider <= 10,
                 })}
               />
             </SliderRadix.Track>
@@ -35,14 +33,14 @@ export function Slider({ label }: Props) {
               className={classNames(
                 'flex items-center justify-center w-7 h-7 rounded-full',
                 {
-                  'bg-red-500': value >= 0 && value <= 3,
-                  'bg-yellow-500': value >= 4 && value <= 6,
-                  'bg-green-500': value >= 7 && value <= 10,
+                  'bg-red-500': valueSlider >= 0 && valueSlider <= 3,
+                  'bg-yellow-500': valueSlider >= 4 && valueSlider <= 6,
+                  'bg-green-500': valueSlider >= 7 && valueSlider <= 10,
                 },
               )}
             >
               <span className="text-sm font-medium text-white">
-                {value !== 0 && value !== 10 ? value : ''}
+                {valueSlider !== 0 && valueSlider !== 10 ? valueSlider : ''}
               </span>
             </SliderRadix.Thumb>
           </SliderRadix.Root>

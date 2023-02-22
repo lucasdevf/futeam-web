@@ -18,7 +18,10 @@ export function Player({
   return (
     <div className="flex items-center gap-5">
       <Image
-        src={avatarUrl}
+        src={
+          avatarUrl ??
+          'https://images.unsplash.com/photo-1610736342165-4eeb4aef66ca?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8c29jY2VyJTIwcGxheWVyfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60'
+        }
         alt=""
         width={64}
         height={64}
