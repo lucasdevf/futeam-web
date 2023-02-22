@@ -26,7 +26,7 @@ export function Player({
         quality={100}
       />
 
-      <div>
+      <div className="flex flex-col gap-1">
         <div className="flex items-center gap-3">
           <span className="text-white font-medium">{name}</span>
 

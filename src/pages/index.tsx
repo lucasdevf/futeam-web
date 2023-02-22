@@ -6,54 +6,51 @@ import { Button } from '@/components/Button'
 import { Heading } from '@/components/Heading'
 import { NewPlayer } from '@/components/NewPlayer'
 import { PlayerCard } from '@/components/PlayerCard'
+import { PlayerLoading } from '@/components/PlayerLoading'
 import { RadioButton } from '@/components/RadioButton'
 import { Result } from '@/components/Result'
+import { api } from '@/services/api'
+import { AppError } from '@/utils/AppError'
 import Head from 'next/head'
 import { DiceSix } from 'phosphor-react'
-import { useState } from 'react'
+import { useQuery } from 'react-query'
+
+interface Player {
+  id: string
+  name: string
+  score: number
+  is_goalkeeper: boolean
+  avatar_url: string
+  created_at: string
+}
 
 export default function Home() {
-  const [players, setPlayers] = useState([
-    {
-      avatarUrl:
-        'https://images.unsplash.com/photo-1517466787929-bc90951d0974?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=686&q=80',
-      name: 'Gabriel Jalles',
-      score: 5,
-      isGoalkeeper: true,
-      isSelected: true,
-    },
-    {
-      avatarUrl:
-        'https://images.unsplash.com/photo-1610736342165-4eeb4aef66ca?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8c29jY2VyJTIwcGxheWVyfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60',
-      name: 'Lucas Ferreira',
-      score: 2,
-      isGoalkeeper: false,
-      isSelected: false,
-    },
-    {
-      avatarUrl:
-        'https://images.unsplash.com/photo-1610736342326-b59eb016ba95?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OXx8c29jY2VyJTIwcGxheWVyfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60',
-      name: 'Adriano Brito',
-      score: 10,
-      isGoalkeeper: true,
-      isSelected: false,
-    },
-  ])
+  async function fetchPlayers() {
+    const response = await api.get('/players')
 
-  function handleCheck(name: string) {
-    setPlayers((prevState) =>
-      prevState.map((player) => {
-        if (player.name === name) {
-          return {
-            ...player,
-            isSelected: !player.isSelected,
-          }
-        }
-
-        return player
-      }),
-    )
+    return response.data
   }
+
+  const {
+    data: players,
+    error,
+    isLoading,
+  } = useQuery<Player[], AppError>('players', fetchPlayers)
+
+  // function handleCheck(name: string) {
+  //   setPlayers((prevState) =>
+  //     prevState.map((player) => {
+  //       if (player.name === name) {
+  //         return {
+  //           ...player,
+  //           isSelected: !player.isSelected,
+  //         }
+  //       }
+
+  //       return player
+  //     }),
+  //   )
+  // }
 
   return (
     <div className="flex flex-col max-w-[1366px] mx-auto pb-10">
@@ -94,20 +91,31 @@ export default function Home() {
             <NewPlayer />
           </header>
 
+          {error && <span className="text-red-500">{error.message}</span>}
+
           <ul className="flex flex-col gap-5 mt-5">
-            {players.map((player) => (
+            {players?.map((player) => (
               <PlayerCard
                 key={player.name}
                 player={{
-                  avatarUrl: player.avatarUrl,
+                  avatarUrl: player.avatar_url,
                   name: player.name,
                   score: player.score,
-                  isGoalkeeper: player.isGoalkeeper,
-                  isSelected: player.isSelected,
+                  isGoalkeeper: player.is_goalkeeper,
+                  isSelected: false,
                 }}
-                onCheck={() => handleCheck(player.name)}
+                onCheck={() => {}}
               />
             ))}
+
+            {isLoading && (
+              <>
+                <PlayerLoading />
+                <PlayerLoading />
+                <PlayerLoading />
+                <PlayerLoading />
+              </>
+            )}
           </ul>
         </section>
 
